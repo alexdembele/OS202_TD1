@@ -17,7 +17,7 @@ void prodSubBlocks(int iRowBlkA, int iColBlkB, int iColBlkA, int szBlock,
         C(i, j) += A(i, k) * B(k, j);
 }
 
-const int szBlock = 32;
+const int szBlock = 8;
 }  // namespace
 Matrix operator*(const Matrix& A, const Matrix& B) {
   Matrix C(A.nbRows, B.nbCols, 0.0);
