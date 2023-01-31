@@ -1,8 +1,8 @@
 from mpi4py import MPI
 import numpy
 
-n=3
-b=4
+n=2
+b=1
 p=2
 final=0
 comm = MPI.COMM_WORLD
@@ -12,6 +12,7 @@ if rank == 0:
     comm.send(jeton, dest=1)
     final=comm.recv(source=n*b*p)
     print("jeton=",final)
+    
 
 for i in range(n*b*p-1):
 
