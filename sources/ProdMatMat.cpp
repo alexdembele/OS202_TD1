@@ -17,21 +17,17 @@ void prodSubBlocks(int iRowBlkA, int iColBlkB, int iColBlkA, int szBlock,
         C(i, j) += A(i, k) * B(k, j);
 }
 
-void prodBlock(const Matrix& A, const Matrix& B, Matrix& C)
-{
-  
-  int n=8;
-  for(int K=0; K<1024;K+=8)
-    for(int L=0; L<1024;L+=8)
-  {
-    prodSubBlocks(n, K, L, n, A, B, C);
-  }
-}
 
-const int szBlock = 8;
+
+const int szBlock = 128;
 }  // namespace
 Matrix operator*(const Matrix& A, const Matrix& B) {
   Matrix C(A.nbRows, B.nbCols, 0.0);
-  prodBlock( A, B, C);
+# pragma omp parallel for collapse(2)
+  for (int jb=0; jb < B.nbCols; jb += szBlock )
+      for (int kb=0; kb<A.nbCols; kb += szBlock )
+          for(int ib=0; ib<A.nbRows; ib += szBlock)
+              prodSubBlocks(ib, jb, kb, szBlock, A, B, C);
+  //prodSubBlocks(0, 0, 0, std::max({A.nbRows, B.nbCols, A.nbCols}), A, B, C);
   return C;
 }
